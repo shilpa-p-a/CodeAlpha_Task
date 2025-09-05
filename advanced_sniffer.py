@@ -1,4 +1,4 @@
-# advanced_sniffer.py - Complete Packet Analyzer
+
 from scapy.all import sniff, IP, TCP, UDP, ICMP, Raw, Ether
 from collections import Counter
 import datetime
@@ -15,22 +15,22 @@ class PacketAnalyzer:
         print(f"📦 Packet #{self.packet_count} - {datetime.datetime.now().strftime('%H:%M:%S')}")
         print(f"{'='*60}")
         
-        # Ethernet Layer
+        
         if packet.haslayer(Ether):
             eth = packet[Ether]
             print(f"🔗 MAC: {eth.src} -> {eth.dst}")
         
-        # IP Layer
+        
         if packet.haslayer(IP):
             ip = packet[IP]
             print(f"🌐 IP: {ip.src} -> {ip.dst}")
             print(f"   Protocol: {self.get_protocol_name(ip.proto)} | TTL: {ip.ttl}")
             
-            # Track conversations
+            
             conv = f"{ip.src} ↔ {ip.dst}"
             self.conversations[conv] += 1
             
-            # Protocol-specific analysis
+            
             if packet.haslayer(TCP):
                 self.analyze_tcp(packet)
             elif packet.haslayer(UDP):
@@ -38,7 +38,7 @@ class PacketAnalyzer:
             elif packet.haslayer(ICMP):
                 self.analyze_icmp(packet)
         
-        # Payload analysis
+        
         self.analyze_payload(packet)
         
         print(f"{'-'*60}")
@@ -100,7 +100,7 @@ class PacketAnalyzer:
         for conv, count in self.conversations.most_common(3):
             print(f"  {conv}: {count} packets")
 
-# Main execution
+
 if __name__ == "__main__":
     print("🛰️  ADVANCED PACKET ANALYZER")
     print("=" * 60)
@@ -111,9 +111,10 @@ if __name__ == "__main__":
     analyzer = PacketAnalyzer()
     
     try:
-        # Capture 10 packets
+        
         sniff(prn=analyzer.analyze_packet, count=10, store=False)
     except KeyboardInterrupt:
         print("\nCapture stopped by user")
     finally:
+
         analyzer.show_stats()
